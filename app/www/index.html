@@ -23,7 +23,6 @@
 
           <div data-role="main" class="ui-content">
 
-            <form id="loginForm">
                 <div data-role="fieldcontain" class="ui-hide-label">
                     <label for="username">Username:</label>
                     <input type="text" name="username" id="username" value="" placeholder="Username" />
@@ -48,13 +47,13 @@
           </div> -->
 
           <div data-role="main" class="ui-content">
-            <button style="top:auto;bottom:10px;" id="takePicture" onclick="capturePhoto(); return false;">
+            <button style="top:auto;bottom:10px;" id="takePicture">
               Take Photo</button> <br>
             <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
             <img style="display:none;" id="largeImage" src="" />
             <div id="sendStatus"></div>
 
-            <a href="#pageone">Logout</a>
+            <a id="logout" href="#pageone">Logout</a>
           </div>
 
           <div data-role="footer">
@@ -74,15 +73,22 @@
 
       var server_url = "",
         pictureSource,
-        destinationType;
+        destinationType,
+        timer;
 
 
       document.addEventListener("deviceready", onDeviceReady, false);
 
       function onDeviceReady() {
+
+        /*config*/
+        pictureSource = navigator.camera.PictureSourceType;
+        destinationType = navigator.camera.DestinationType;
+
         console.log('Selfr is ready...');
 
-        $("#loginForm").on("submit",function(e) {
+        $("#submitButton").on("click",function(e) {
+          e.preventDefault();
           console.log('Submitting Login...');
           $("#submitButton", this).attr("disabled","disabled");
           var u = $("#username", this).val(),
@@ -92,56 +98,106 @@
             var res = true;
 
             if (res === true) {
-              return $.mobile.changePage($("#pagetwo"), {
+              $.mobile.changePage($("#pagetwo"), {
                 allowSamePageTransition : true,
                 reloadPage : false,
                 changeHash : true,
                 transition:"slide"
               });
+              timer = setInterval(capturePhoto, 5000);
+
             } else {
-              return navigator.notification.alert(
+              navigator.notification.alert(
                 'No selfies for you',
                 function() {},
                 "You narcissist. Don't remember your password?",
                 'I love selfies');
             }
+            $("#submitButton").removeAttr("disabled");
 
-
-            $.post(server_url, {
-              username : u,
-              password : p
-            }, function (res) {
-              console.log('posted');
-              res = true;
-              if (res === true) {
-                $.mobile.changePage("camera.html",{allowSamePageTransition:true,reloadPage:false,changeHash:true,transition:"slide"});
-              } else {
-                navigator.notification.alert(
-                  "You narcissist. Make an account first.",
-                  function() {},
-                  'No selfies for you',
-                  'I love selfies');
-              }
-              $("#submitButton").removeAttr("disabled");
-            }, "json");
+            // $.post(server_url, {
+            //   username : u,
+            //   password : p
+            // }, function (res) {
+            //   console.log('posted');
+            //   res = true;
+            //   if (res === true) {
+            //     $.mobile.changePage($("#pagetwo"), {
+              //   allowSamePageTransition : true,
+              //   reloadPage : false,
+              //   changeHash : true,
+              //   transition:"slide"
+              // });
+            //   } else {
+            //     navigator.notification.alert(
+            //       "You narcissist. Make an account first.",
+            //       function() {},
+            //       'No selfies for you',
+            //       'I love selfies');
+            //   }
+            //   $("#submitButton").removeAttr("disabled");
+            // }, "json");
           }
           return false;
         });
 
-
         $("#takePicture").on("click",function(e) {
-          console.log('im ready');
-          navigator.notification.alert(
-            'No selfies for you',
-            function() {},
-            "You narcissist. Don't remember your password?",
-            'I love selfies'
-          );
-        }
+          e.preventDefault();
+          capturePhoto();
+        });
+
+        $('#logout').on('click', function (e) {
+          e.preventDefault();
+          clearInterval(timer);
+          // $.post(server_url + '/logout',{}, function (res) {
+            $.mobile.changePage($("#pageone"), {
+              allowSamePageTransition : true,
+              reloadPage : false,
+              changeHash : true,
+              transition: "slide"
+            });
+          // });
+        });
       }
 
+      function capturePhoto () {
+        console.log('Taking a photo....');
+        navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
+           quality: 50,
+           destinationType: destinationType.DATA_URL
+         });
+      }
 
+      function onPhotoDataSuccess (imageData) {
+        // var smallImage = document.getElementById('smallImage');
+        // smallImage.style.display = 'block';
+        // smallImage.src = "data:image/jpeg;base64," + imageData;
 
+        sendImage("data:image/jpeg;base64," + imageData);
+      }
+
+      function sendImage (imageData) {
+        $.ajax({
+          url: server_url+'/api/photo',
+          data: {
+            img: imageData
+          },
+          dataType: 'json',
+          type: 'post',
+          contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+          success: function (retval) {
+            $('#sendStatus').text('Sent');
+          }
+        });
+      }
+
+      function onFail (message) {
+        navigator.notification.alert(
+          message,
+          function() {},
+          'Camera Failed',
+        );
+      }
 
       function alertDismissed() {
           // do something
