@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <title>Selfr</title>
+</head>
+    <body onload="camera.init()">
+        <button onclick="capturePhoto();">Capture Photo</button> <br>
+        <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+        <img style="display:none;" id="largeImage" src="" />
+        <div id="sendStatus"></div>
+    </body>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8"  src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" charset="utf-8"  src="js/jquery.mobile-1.4.5.min.js"></script>
+
+    <script type="text/javascript" src"js/index.js"></script>
+    <script type="text/javascript">
+      var server_url = "",
+        pictureSource,
+        destinationType;
+
+      document.addEventListener("deviceready", onDeviceReady, false);
+
+      function onDeviceReady () {
+        pictureSource = navigator.camera.PictureSourceType;
+        destinationType = navigator.camera.DestinationType;
+      }
+
+      function onPhotoDataSuccess (imageData) {
+        var smallImage = document.getElementById('smallImage');
+
+        smallImage.style.display = 'block';
+
+        smallImage.src = "data:image/jpeg;base64," + imageData;
+        app.sendImage(imageData);
+      }
+
+       function onPhotoURISuccess (imageURI) {
+        var largeImage = document.getElementById('largeImage');
+
+        largeImage.style.display = 'block';
+        largeImage.src = imageURI;
+      }
+
+      function capturePhoto () {
+        navigator.camera.getPicture(onPhotoDataSuccess, function () {/*fail*/}, {
+           quality: 50,
+           destinationType: destinationType.DATA_URL
+         });
+      }
+
+      function sendImage (imageData) {
+        $.ajax({
+          url: server_url+'/api/photo',
+          data: {
+            img: imageData
+          },
+          dataType: 'json',
+          type: 'post',
+          contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+          success: function (retval) {
+            $('#sendStatus').text('Sent');
+          }
+        });
+      }
+
+    </script>
+
+</html>
