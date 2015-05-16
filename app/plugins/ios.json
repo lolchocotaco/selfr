@@ -36,6 +36,12 @@
                             "xml": false,
                             "count": 1
                         }
+                    ],
+                    "AudioToolbox.framework": [
+                        {
+                            "xml": true,
+                            "count": 1
+                        }
                     ]
                 }
             },
@@ -48,6 +54,14 @@
                         },
                         {
                             "xml": "<preference name=\"CameraUsesGeolocation\" value=\"false\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"ios-package\" value=\"CDVNotification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -67,10 +81,16 @@
     },
     "installed_plugins": {
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.chd.hello"
+            "PACKAGE_NAME": "com.chd.self"
         },
         "org.apache.cordova.camera": {
-            "PACKAGE_NAME": "com.chd.hello"
+            "PACKAGE_NAME": "com.chd.self"
+        },
+        "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "com.chd.self"
+        },
+        "org.apache.cordova.console": {
+            "PACKAGE_NAME": "com.chd.self"
         }
     },
     "dependent_plugins": {}
