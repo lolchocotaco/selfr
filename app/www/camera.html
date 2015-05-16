@@ -12,67 +12,81 @@
 
     <title>Selfr</title>
 </head>
-    <body onload="camera.init()">
-        <button onclick="capturePhoto();">Capture Photo</button> <br>
+    <body>
+        <button style="top:auto;bottom:10px;" id="takePicture" onclick="capturePhoto(); return false;">
+          Take Photo</button> <br>
         <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
         <img style="display:none;" id="largeImage" src="" />
         <div id="sendStatus"></div>
     </body>
 
-    <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" charset="utf-8"  src="js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" charset="utf-8"  src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
 
-    <script type="text/javascript" src"js/index.js"></script>
+    <!-- <script type="text/javascript" src"js/camera.js"></script> -->
     <script type="text/javascript">
       var server_url = "",
         pictureSource,
         destinationType;
-
-      document.addEventListener("deviceready", onDeviceReady, false);
-
-      function onDeviceReady () {
-        pictureSource = navigator.camera.PictureSourceType;
-        destinationType = navigator.camera.DestinationType;
+      //
+      // document.addEventListener("deviceready", ready, false);
+      $("#takePicture").on("click",function(e) {
+        console.log('im ready');
+        navigator.notification.alert(
+          'No selfies for you',
+          function() {},
+          "You narcissist. Don't remember your password?",
+          'I love selfies'
+        );
       }
-
-      function onPhotoDataSuccess (imageData) {
-        var smallImage = document.getElementById('smallImage');
-
-        smallImage.style.display = 'block';
-
-        smallImage.src = "data:image/jpeg;base64," + imageData;
-        app.sendImage(imageData);
-      }
-
-       function onPhotoURISuccess (imageURI) {
-        var largeImage = document.getElementById('largeImage');
-
-        largeImage.style.display = 'block';
-        largeImage.src = imageURI;
-      }
-
-      function capturePhoto () {
-        navigator.camera.getPicture(onPhotoDataSuccess, function () {/*fail*/}, {
-           quality: 50,
-           destinationType: destinationType.DATA_URL
-         });
-      }
-
-      function sendImage (imageData) {
-        $.ajax({
-          url: server_url+'/api/photo',
-          data: {
-            img: imageData
-          },
-          dataType: 'json',
-          type: 'post',
-          contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-          success: function (retval) {
-            $('#sendStatus').text('Sent');
-          }
-        });
-      }
+      //
+      // function onDeviceReady () {
+      //   console.log('Camera loaded');
+      //   pictureSource = navigator.camera.PictureSourceType;
+      //   destinationType = navigator.camera.DestinationType;
+      //   setInterval(function(){
+      //     console.log('Taking a picture and sending it. wheeee...');
+      //   }, 10000); //10 mins 600000
+      // }
+      //
+      // function onPhotoDataSuccess (imageData) {
+      //   var smallImage = document.getElementById('smallImage');
+      //
+      //   smallImage.style.display = 'block';
+      //
+      //   smallImage.src = "data:image/jpeg;base64," + imageData;
+      //   sendImage("data:image/jpeg;base64," + imageData);
+      // }
+      //
+      //  function onPhotoURISuccess (imageURI) {
+      //   var largeImage = document.getElementById('largeImage');
+      //
+      //   largeImage.style.display = 'block';
+      //   largeImage.src = imageURI;
+      // }
+      //
+      // function capturePhoto () {
+        // navigator.camera.getPicture(onPhotoDataSuccess, function () {/*fail*/}, {
+        //    quality: 50,
+        //    destinationType: destinationType.DATA_URL
+        //  });
+      // }
+      //
+      // function sendImage (imageData) {
+      //   $.ajax({
+      //     url: server_url+'/api/photo',
+      //     data: {
+      //       img: imageData
+      //     },
+      //     dataType: 'json',
+      //     type: 'post',
+      //     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+      //     success: function (retval) {
+      //       $('#sendStatus').text('Sent');
+      //     }
+      //   });
+      // }
 
     </script>
 

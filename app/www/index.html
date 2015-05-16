@@ -15,25 +15,49 @@
         <title>Selfr</title>
     </head>
     <body>
-        <div class="app">
-          <h1>Selfr</h1>
-          <form id="loginForm">
-              <div data-role="fieldcontain" class="ui-hide-label">
-                  <label for="username">Username:</label>
-                  <input type="text" name="username" id="username" value="" placeholder="Username" />
-              </div>
+      <div class="selfr">
+        <div data-role="page" id="pageone">
+          <div data-role="header">
+            <h1>Selfr</h1>
+          </div>
 
-              <div data-role="fieldcontain" class="ui-hide-label">
-                  <label for="password">Password:</label>
-                  <input type="password" name="password" id="password" value="" placeholder="Password" />
-              </div>
+          <div data-role="main" class="ui-content">
 
-              <input type="submit" value="Login" id="submitButton">
-          </form>
+            <form id="loginForm">
+                <div data-role="fieldcontain" class="ui-hide-label">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username" value="" placeholder="Username" />
+                </div>
+
+                <div data-role="fieldcontain" class="ui-hide-label">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" value="" placeholder="Password" />
+                </div>
+
+                <input type="submit" value="Login" id="submitButton">
+          </div>
+
+          <div data-role="footer">
+            <h1>Footer Text</h1>
+          </div>
+        </div> <!-- end:pageone -->
+
+        <div data-role="page" id="pagetwo">
+          <div data-role="header">
+            <h1>Welcome To My Homepage</h1>
+          </div>
+
+          <div data-role="main" class="ui-content">
+            <p>This is Page Two. If you click on the link below, it will take you to Page One.</p>
+            <a href="#pageone">Go to Page One</a>
+          </div>
+
+          <div data-role="footer">
+            <h1>Footer Text</h1>
+          </div>
         </div>
 
-
-
+      </div>  <!--end:app -->
 
         <!-- Javascript -->
       <script type="text/javascript" src="cordova.js"></script>
@@ -61,10 +85,10 @@
           if (u !== '' && p !== '') {
             var res = true;
             if (res === true) {
-              $.mobile.changePage("camera.html", {
-                allowSamePageTransition:true,
-                reloadPage:false,
-                changeHash:true,
+              $.mobile.changePage($("#pagetwo"), {
+                allowSamePageTransition : true,
+                reloadPage : false,
+                changeHash : true,
                 transition:"slide"
               });
             } else {
