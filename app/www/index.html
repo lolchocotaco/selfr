@@ -43,13 +43,18 @@
         </div> <!-- end:pageone -->
 
         <div data-role="page" id="pagetwo">
-          <div data-role="header">
+          <!-- <div data-role="header">
             <h1>Welcome To My Homepage</h1>
-          </div>
+          </div> -->
 
           <div data-role="main" class="ui-content">
-            <p>This is Page Two. If you click on the link below, it will take you to Page One.</p>
-            <a href="#pageone">Go to Page One</a>
+            <button style="top:auto;bottom:10px;" id="takePicture" onclick="capturePhoto(); return false;">
+              Take Photo</button> <br>
+            <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+            <img style="display:none;" id="largeImage" src="" />
+            <div id="sendStatus"></div>
+
+            <a href="#pageone">Logout</a>
           </div>
 
           <div data-role="footer">
@@ -67,7 +72,10 @@
       <script type="text/javascript" src"js/index.js"></script>
       <script type="text/javascript">
 
-      var server_url = "";
+      var server_url = "",
+        pictureSource,
+        destinationType;
+
 
       document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -75,52 +83,65 @@
         console.log('Selfr is ready...');
 
         $("#loginForm").on("submit",function(e) {
-          console.log('Clicked...');
-
+          console.log('Submitting Login...');
           $("#submitButton", this).attr("disabled","disabled");
-
           var u = $("#username", this).val(),
             p = $("#password", this).val();
 
           if (u !== '' && p !== '') {
             var res = true;
+
             if (res === true) {
-              $.mobile.changePage($("#pagetwo"), {
+              return $.mobile.changePage($("#pagetwo"), {
                 allowSamePageTransition : true,
                 reloadPage : false,
                 changeHash : true,
                 transition:"slide"
               });
             } else {
-              navigator.notification.alert(
+              return navigator.notification.alert(
                 'No selfies for you',
                 function() {},
                 "You narcissist. Don't remember your password?",
                 'I love selfies');
             }
-            $("#submitButton").removeAttr("disabled");
 
-            // $.post(server_url, {
-            //   username : u,
-            //   password : p
-            // }, function (res) {
-            //   console.log('posted');
-            //   res = true;
-            //   if (res === true) {
-            //     $.mobile.changePage("camera.html",{allowSamePageTransition:true,reloadPage:false,changeHash:true,transition:"slide"});
-            //   } else {
-            //     navigator.notification.alert(
-            //       "You narcissist. Make an account first.",
-            //       function() {},
-            //       'No selfies for you',
-            //       'I love selfies');
-            //   }
-            //   $("#submitButton").removeAttr("disabled");
-            // }, "json");
+
+            $.post(server_url, {
+              username : u,
+              password : p
+            }, function (res) {
+              console.log('posted');
+              res = true;
+              if (res === true) {
+                $.mobile.changePage("camera.html",{allowSamePageTransition:true,reloadPage:false,changeHash:true,transition:"slide"});
+              } else {
+                navigator.notification.alert(
+                  "You narcissist. Make an account first.",
+                  function() {},
+                  'No selfies for you',
+                  'I love selfies');
+              }
+              $("#submitButton").removeAttr("disabled");
+            }, "json");
           }
           return false;
         });
+
+
+        $("#takePicture").on("click",function(e) {
+          console.log('im ready');
+          navigator.notification.alert(
+            'No selfies for you',
+            function() {},
+            "You narcissist. Don't remember your password?",
+            'I love selfies'
+          );
+        }
       }
+
+
+
 
       function alertDismissed() {
           // do something
