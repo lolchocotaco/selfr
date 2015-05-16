@@ -39,7 +39,7 @@
 
           <div data-role="main" class="ui-content">
             <button style="top:auto;bottom:10px;" id="takePicture">
-              Take Photo</button> <br>
+              I'm Pretty</button> <br>
             <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
             <img style="display:none;" id="largeImage" src="" />
             <div id="sendStatus"></div>
@@ -47,9 +47,6 @@
             <a id="logout" href="#pageone">Logout</a>
           </div>
 
-          <div data-role="footer">
-            <h1>Footer Text</h1>
-          </div>
         </div>
 
       </div>  <!--end:app -->
@@ -88,8 +85,6 @@
 
           if (u !== '' && p !== '') {
             var res = true;
-            console.log(u.toLowerCase());
-            console.log(p.toLowerCase());
 
             if (u.toLowerCase() ==='selfme' && p.toLowerCase() === 'yayme') {
               $.mobile.changePage($("#pagetwo"), {
@@ -149,7 +144,8 @@
               allowSamePageTransition : true,
               reloadPage : false,
               changeHash : true,
-              transition: "slide"
+              transition: "slide",
+              reverse : true
             });
           // });
         });
@@ -157,34 +153,49 @@
 
       function capturePhoto () {
         console.log('Taking a photo....');
-        navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
-           quality: 50,
-           destinationType: destinationType.DATA_URL
-         });
+         navigator.device.capture.captureImage(captureSuccess, onFail);
       }
 
-      function onPhotoDataSuccess (imageData) {
-        // var smallImage = document.getElementById('smallImage');
-        // smallImage.style.display = 'block';
-        // smallImage.src = "data:image/jpeg;base64," + imageData;
-
-        sendImage("data:image/jpeg;base64," + imageData);
-      }
-
-      function sendImage (imageData) {
-        $.ajax({
-          url: server_url+'/api/photo',
-          data: {
-            img: imageData
-          },
-          dataType: 'json',
-          type: 'post',
-          contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-          success: function (retval) {
-            $('#sendStatus').text('Sent');
+      function captureSuccess(mediaFiles) {
+        var i, len;
+        for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+          uploadFile(mediaFiles[i]);
           }
-        });
+       }
+
+      function uploadFile(mediaFile) {
+      var ft = new FileTransfer(),
+          path = mediaFile.fullPath,
+          name = mediaFile.name;
+
+      ft.upload(path,
+          "http://my.domain.com/upload.php",
+          function(result) {
+              console.log('Upload success: ' + result.responseCode);
+              console.log(result.bytesSent + ' bytes sent');
+          },
+          function(error) {
+              console.log('Error uploading file ' + path + ': ' + error.code);
+          },
+          { fileName: name });
       }
+
+
+
+      // function sendImage (imageData) {
+      //   $.ajax({
+      //     url: server_url+'/api/photo',
+      //     data: {
+      //       img: imageData
+      //     },
+      //     dataType: 'json',
+      //     type: 'post',
+      //     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+      //     success: function (retval) {
+      //       $('#sendStatus').text('Sent');
+      //     }
+      //   });
+      // }
 
       function onFail (message) {
         navigator.notification.alert(message,
