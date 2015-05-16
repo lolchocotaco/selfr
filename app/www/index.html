@@ -197,8 +197,9 @@
       //   });
       // }
 
-      function onFail (message) {
-        navigator.notification.alert(message,
+      function onFail (err) {
+        console.log(err)
+        navigator.notification.alert(err.message,
           function () {},
           'Camera Failed'
         );
