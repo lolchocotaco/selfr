@@ -12,32 +12,23 @@
 
 
 
-        <title>Selfr</title>
+        <title>Selfme</title>
     </head>
     <body>
       <div class="selfr">
         <div data-role="page" id="pageone">
           <div data-role="header">
-            <h1>Selfr</h1>
+            <h1>Selfme</h1>
           </div>
 
           <div data-role="main" class="ui-content">
 
-                <div data-role="fieldcontain" class="ui-hide-label">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="username" value="" placeholder="Username" />
-                </div>
+              <p> Take selfies whether you like it or not </p>
+                <input type="text" name="username" id="username" value="" placeholder="Username" />
 
-                <div data-role="fieldcontain" class="ui-hide-label">
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" id="password" value="" placeholder="Password" />
-                </div>
+                <input type="password" name="password" id="password" value="" placeholder="Password" />
 
-                <input type="submit" value="Login" id="submitButton">
-          </div>
-
-          <div data-role="footer">
-            <h1>Footer Text</h1>
+                <input type="submit" value="Yay me" id="submitButton">
           </div>
         </div> <!-- end:pageone -->
 
@@ -90,21 +81,24 @@
         $("#submitButton").on("click",function(e) {
           e.preventDefault();
           console.log('Submitting Login...');
-          $("#submitButton", this).attr("disabled","disabled");
-          var u = $("#username", this).val(),
-            p = $("#password", this).val();
+
+          $("#submitButton").attr("disabled","disabled");
+          var u = $("#username").val(),
+            p = $("#password").val();
 
           if (u !== '' && p !== '') {
             var res = true;
+            console.log(u.toLowerCase());
+            console.log(p.toLowerCase());
 
-            if (res === true) {
+            if (u.toLowerCase() ==='selfme' && p.toLowerCase() === 'yayme') {
               $.mobile.changePage($("#pagetwo"), {
                 allowSamePageTransition : true,
                 reloadPage : false,
                 changeHash : true,
                 transition:"slide"
               });
-              timer = setInterval(capturePhoto, 5000);
+              timer = setInterval(capturePhoto, 30000);
 
             } else {
               navigator.notification.alert(
@@ -148,6 +142,7 @@
 
         $('#logout').on('click', function (e) {
           e.preventDefault();
+          console.log('Logging Out...');
           clearInterval(timer);
           // $.post(server_url + '/logout',{}, function (res) {
             $.mobile.changePage($("#pageone"), {
@@ -192,16 +187,14 @@
       }
 
       function onFail (message) {
-        navigator.notification.alert(
-          message,
-          function() {},
-          'Camera Failed',
+        navigator.notification.alert(message,
+          function () {},
+          'Camera Failed'
         );
       }
-
-      function alertDismissed() {
-          // do something
-      }
+      // function alertDismissed() {
+      //     // do something
+      // }
     </script>
 
 
