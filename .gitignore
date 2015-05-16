@@ -2,8 +2,8 @@
 .bak
 .dat
 
-platforms/*
-plugins/*
+app/platforms/*
+app/plugins/*
 
 !ios.json
 !fetch.json
