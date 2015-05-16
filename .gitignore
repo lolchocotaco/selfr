@@ -1,0 +1,9 @@
+.log
+.bak
+.dat
+
+platforms/*
+plugins/*
+
+!ios.json
+!fetch.json
